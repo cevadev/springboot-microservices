@@ -1,0 +1,15 @@
+Product composite service
+=========================
+
+Este proyecto se encarga de llamar a los proyectos:
+    * product-service
+    * recommendation-service
+    * review-service
+
+Hemos renombrado el archivo application.properties a application.yml. En este archivo realizamos la
+configuracion de los servicios.
+
+El paquete ar.admiral.microservices.composite.product.services maneja la capa de integracion
+que llamara a los otros servicios arriba mencionados.
+
+
