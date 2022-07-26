@@ -9,4 +9,34 @@ public class HttpErrorInfo {
     private String path;
     private HttpStatus httpStatus;
     private String message;
+
+    public HttpErrorInfo() {
+        timestamp = null;
+        this.httpStatus = null;
+        this.path = null;
+        this.message = null;
+    }
+
+    public HttpErrorInfo(ZonedDateTime timestamp, String path, HttpStatus httpStatus, String message) {
+        this.timestamp = timestamp;
+        this.path = path;
+        this.httpStatus = httpStatus;
+        this.message = message;
+    }
+
+    public ZonedDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }
