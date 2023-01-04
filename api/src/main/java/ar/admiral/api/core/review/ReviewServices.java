@@ -9,7 +9,7 @@ import java.util.List;
 public interface ReviewServices {
     @GetMapping(
             value = "/review",
-            produces = MediaType.APPLICATION_JSON_VALUE
+            produces = "application/json"
     )
     List<Review> getReviews(@RequestParam(value = "productId", required = true) int productId);
 }

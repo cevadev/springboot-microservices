@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-// clase componente: significa que esta clase se puede inyectar en lo proyecto que importan util
+// clase componente: significa que esta clase se puede inyectar en el proyecto que importan util
 @Component
 public class ServiceUtil {
     private static final Logger LOG = LoggerFactory.getLogger(ServiceUtil.class);

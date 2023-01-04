@@ -12,7 +12,7 @@ import java.util.List;
 public interface RecommendationService {
     @GetMapping(
             value = "/recommendation",
-            produces = MediaType.APPLICATION_JSON_VALUE
+            produces = "application/json"
     )
     List<Recommendation> getRecommendations(@RequestParam(value = "productId", required = true) int productId);
 }
