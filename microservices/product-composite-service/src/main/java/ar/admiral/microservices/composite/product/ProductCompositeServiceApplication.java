@@ -9,14 +9,14 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 // indicamos donde debe buscar otros componentes de los proyectos importamos (api y util)
-@Component("ar.admiral")
+@ComponentScan("ar.admiral")
 public class ProductCompositeServiceApplication {
 
-	// le decimos a Spring que se cree un objeto RestTemplate
-	/*@Bean
+	// le decimos a Spring que se cree un bean RestTemplate y lo hacemos disponible para todo el proyecto
+	@Bean
 	RestTemplate restTemplate(){
 		return new RestTemplate();
-	}*/
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProductCompositeServiceApplication.class, args);

@@ -2,6 +2,7 @@ package ar.admiral.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ public class ServiceUtil {
     private String serviceAddress = null;
 
     // leemos el port del archivo properties. nombre de la key server.port
+    @Autowired
     public ServiceUtil(@Value("${server.port}") String port){
         this.port = port;
     }

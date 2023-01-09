@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * @RequestParam -> cuando se utiliza el @requestParam el uri sera https://www.site:8080/recommendation?productId=1
+ * pasamos en el request el key/value
  */
 public interface RecommendationService {
     @GetMapping(

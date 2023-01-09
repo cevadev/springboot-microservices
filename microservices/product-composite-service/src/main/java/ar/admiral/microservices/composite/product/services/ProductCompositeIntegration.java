@@ -13,31 +13,38 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * ProductCompositeIntegration es un componente de Spring
- * Implementacion de ProductService, RecommendationServices y ReviewServices
+ * que llama a la implementacion de ProductService, RecommendationServices y ReviewServices
+ * que se encuentra dentro de la carpeta microservicios
  */
 @Component
 public class ProductCompositeIntegration implements ProductService, RecommendationService, ReviewServices {
     private static final Logger LOG = LoggerFactory.getLogger(ProductCompositeIntegration.class);
 
+    // Bean RestTemplate para llamar a otros servicios
     private final RestTemplate restTemplate;
 
     // para trabjar con json
     private final ObjectMapper objectMapper;
 
+    // url de los distintos proyectos
     private final String productServiceUrl;
     private final String recommendationServiceUrl;
     private final String reviewServiceUrl;
 
     // @Value() -> le pasamos el valor de la respectiva variable del archivo application.yml
+    // utilizando spring expression laguage ${}
     public ProductCompositeIntegration(RestTemplate restTemplate, ObjectMapper objectMapper,
                                        @Value("${app.product-service.host}") String productServiceHost,
                                        @Value("${app.product-service.port}") String productServicePort,
@@ -48,14 +55,50 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.productServiceUrl = "http://" + productServiceHost + ":" + productServicePort + "/product/";
-        this.recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation?productId";
-        this.reviewServiceUrl = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review?productId";
+        // esta url varia porque recommendatio y review utilizan request param
+        this.recommendationServiceUrl = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation?productId=";
+        this.reviewServiceUrl = "http://" + reviewServiceHost + ":" + reviewServicePort + "/review?productId=";
+    }
+
+    @Override
+    public List<Review> getReviews(int productId) {
+        try{
+            String url = reviewServiceUrl + productId;
+            LOG.debug("Llamamos al API getReviews en la URL {}", url);
+            List<Review> reviewList = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Review>>() {
+            }).getBody();
+            return reviewList;
+        }
+        catch(Exception ex){
+            LOG.warn("Se produjo una excepcion mientras solicitamos la lista de revisiones," +
+                    "retornamos cero revisiones: {}", ex.getMessage());
+            // retornamos una lista vacia
+            return new ArrayList<>();
+        }
+    }
+    @Override
+    public List<Recommendation> getRecommendations(int productId) {
+        try{
+            String url = recommendationServiceUrl + productId;
+            LOG.debug("Llamamos al API getRecommendations en la URL {}", url);
+            // obtenemos una lista de recomendaciones haciendo un get al url
+            List<Recommendation> recommendationList = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Recommendation>>() {
+            }).getBody();
+            LOG.debug("Encontramos {} recomendaciones para el producto {}", recommendationList.size(), productId);
+            return recommendationList;
+        }
+        catch(Exception ex){
+            LOG.warn("Se produjo una excepcion mientras solicitamos la lista de recomendaciones," +
+                    "retornamos cero recomendaciones: {}", ex.getMessage());
+            // retornamos una lista vacia
+            return new ArrayList<>();
+        }
     }
 
     @Override
     public Product getProduct(int productId) {
-        // manejamos el procesamiento en un trycatch por si algo sale mal
         try {
+            // formamos el url concatenando el productId
             String url = productServiceUrl + productId;
             LOG.debug("Llamamos al API getProduct en la URL {}", url);
 
@@ -81,21 +124,12 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     private String getErrorMessage(HttpClientErrorException ex){
         try {
-            // el objeto objetMapper lee texto de un objeto y la pasa a otro objeto custom
+            // el objeto objetMapper lee el cuerpo de la respuesta de un objeto y
+            // le pasamos la informacion a nuestro objeto HttpErrorInfo y con getMeesage() obtenemos mensaje
             return objectMapper.readValue(ex.getResponseBodyAsString(), HttpErrorInfo.class).getMessage();
         }
         catch(IOException error){
             return error.getMessage();
         }
-    }
-
-    @Override
-    public List<Recommendation> getRecommendations(int productId) {
-        return null;
-    }
-
-    @Override
-    public List<Review> getReviews(int productId) {
-        return null;
     }
 }
