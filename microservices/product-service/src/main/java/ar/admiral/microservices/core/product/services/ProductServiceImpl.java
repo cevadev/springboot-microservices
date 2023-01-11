@@ -37,10 +37,6 @@ public class ProductServiceImpl implements ProductService {
             throw new NotFoundException("No product found for productId " + productId);
         }
 
-        if(productId == 8){
-            throw new BadRequestException("Type mismatch");
-        }
-
         return new Product(productId, "name - " + productId, 123, serviceUtil.getServiceAddress());
     }
 }
