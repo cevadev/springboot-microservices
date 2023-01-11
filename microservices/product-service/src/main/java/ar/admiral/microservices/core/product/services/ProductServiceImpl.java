@@ -2,6 +2,7 @@ package ar.admiral.microservices.core.product.services;
 
 import ar.admiral.api.core.product.Product;
 import ar.admiral.api.core.product.ProductService;
+import ar.admiral.api.exceptions.BadRequestException;
 import ar.admiral.api.exceptions.InvalidInputException;
 import ar.admiral.api.exceptions.NotFoundException;
 import ar.admiral.util.ServiceUtil;
@@ -33,7 +34,11 @@ public class ProductServiceImpl implements ProductService {
         }
 
         if(productId == 13){
-            throw new NotFoundException("No product found for productId {}" + productId);
+            throw new NotFoundException("No product found for productId " + productId);
+        }
+
+        if(productId == 8){
+            throw new BadRequestException("Type mismatch");
         }
 
         return new Product(productId, "name - " + productId, 123, serviceUtil.getServiceAddress());

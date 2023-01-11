@@ -111,9 +111,9 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
         catch(HttpClientErrorException ex){
             switch (ex.getStatusCode()){
                 case NOT_FOUND:
-                    throw new NotFoundException();
+                    throw new NotFoundException(getErrorMessage(ex));
                 case UNPROCESSABLE_ENTITY:
-                    throw new InvalidInputException();
+                    throw new InvalidInputException(getErrorMessage(ex));
                 default:
                     LOG.warn("Ocurrió un error inesperado: {}, se lanzara", ex.getStatusCode());
                     LOG.warn("Error body: {}", ex.getResponseBodyAsString());

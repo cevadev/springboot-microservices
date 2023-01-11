@@ -1,5 +1,6 @@
 package ar.admiral.util;
 
+import ar.admiral.api.exceptions.BadRequestException;
 import ar.admiral.api.exceptions.InvalidInputException;
 import ar.admiral.api.exceptions.NotFoundException;
 import org.slf4j.Logger;
@@ -30,19 +31,23 @@ public class GlobalControllerExceptionHandler {
         return createHttpErrorInfo(HttpStatus.NOT_FOUND, request, ex);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestException.class)
+    public @ResponseBody HttpErrorInfo handleBadRequestException(ServerHttpRequest request, BadRequestException ex){
+        return createHttpErrorInfo(HttpStatus.BAD_REQUEST, request, ex);
+    }
+
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(InvalidInputException.class)
-    public @ResponseBody HttpErrorInfo handleInvalidInputException(ServerHttpRequest request, NotFoundException ex){
+    public @ResponseBody HttpErrorInfo handleInvalidInputException(ServerHttpRequest request, InvalidInputException ex){
         return createHttpErrorInfo(HttpStatus.UNPROCESSABLE_ENTITY, request, ex);
     }
 
-    private HttpErrorInfo createHttpErrorInfo(HttpStatus httpStatus, ServerHttpRequest request, NotFoundException ex) {
+    private HttpErrorInfo createHttpErrorInfo(HttpStatus httpStatus, ServerHttpRequest request, Exception ex) {
         // obtenemos el path que lanzo el error
         final String path = request.getPath().pathWithinApplication().value();
         final String message = ex.getMessage();
         LOG.debug("Returning HTTP Status: {} for path: {}, message {}", httpStatus, path, message);
         return new HttpErrorInfo(httpStatus, path, message);
     }
-
-
 }
