@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+
 # En ocasiones necesitamos levantar todos los proyectos y hacer una prueba global para comprobar el
 # funcionamiento de app.
 # HOST=localhost PORT=7000 ./test-ms-all.bash
