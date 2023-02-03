@@ -1,3 +1,58 @@
+# informacion para llamar al visor de Swagger
+springdoc:
+  swagger-ui:
+    path: /openapi/swagger-ui.html
+  api-docs:
+    path: /openapi/v3/api-docs
+  packagesToScan: ar.admiral.microservices.composite.product
+  paths-to-match: /**
+
+# variables para manejar la documentacion del api
+api:
+  common:
+    version: 1.0.0
+    title: Sample API
+    description: API Description
+    termsOfService: MY TERMS OF SERVICE
+    license: MY LICENSE
+    licenseUrl: MY LICENSE URL
+
+    externalDocDesc: MU WIKI PAGE
+    externalDocUrl: MY WIKI URL
+    contact:
+      name: NAME OF CONTACT
+      url: URL TO CONTACT
+      email: contact@gmail.com
+
+  responseCodes:
+    ok.description: OK
+    badRequest.description: Bad request, invalid format of the request, See response message for more information
+    notFound.description: Not found, the specified id does not exist
+    unprocessableEntity.description: Unprocessable entity, in parameter caused the processing to fail. See response message for more  information
+
+  product-composite:
+    get-composite-product:
+      description: Returns a composite view of the specified product id
+      notes: |
+        # Normal Response
+        If the request product id is found the method will return information regarding
+        1. Base product information
+        1. Review
+        1. Recommendations
+        1. Service address\n
+        # Expected partial and error responses
+        In the following cases, only a partial response be created
+        ## Product id 113
+        200 - ok, but no recommendations will be returned
+        ## Product id 213
+        200 - ok, but no reviews will be returned
+        ## non numerical product id
+        400 -  A **Bad request** error will be returned
+        ## Product id 13
+        404 - A **Not found** error will be returned
+        ## Negative product ids
+        422 - An **Unprocessable Entity** error will be returned
+
 server:
   port: 7000
 

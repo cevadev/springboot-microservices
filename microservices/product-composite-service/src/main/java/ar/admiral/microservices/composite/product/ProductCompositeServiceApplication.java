@@ -1,10 +1,17 @@
 package ar.admiral.microservices.composite.product;
 
+import io.swagger.v3.oas.models.ExternalDocumentation;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
+
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
@@ -12,10 +19,40 @@ import org.springframework.web.client.RestTemplate;
 @ComponentScan("ar.admiral")
 public class ProductCompositeServiceApplication {
 
+	@Value("${api.common.version}") String apiTitle;
+	@Value("${api.common.description}") String apiDescription;
+	@Value("${api.common.version}") String apiVersion;
+	@Value("${api.common.termsOfService}") String apiTermsOfService;
+	@Value("${api.common.license}") String apiLicense;
+	@Value("${api.common.licenseUrl}") String apiLicenseUrl;
+	@Value("${api.common.externalDocDesc}") String apiExternalDocDesc;
+	@Value("${api.common.externalDocUrl}") String apiExternalDocUrl;
+	@Value("${api.common.contact.name}") String apiContactName;
+	@Value("${api.common.contact.url}") String apiContactUrl;
+	@Value("${api.common.contact.email}") String apiContactEmail;
+
+
 	// le decimos a Spring que se cree un bean RestTemplate y lo hacemos disponible para todo el proyecto
 	@Bean
 	RestTemplate restTemplate(){
 		return new RestTemplate();
+	}
+
+	// bean para manejar la documentacion api
+	@Bean
+	public OpenAPI getOpenApiDocumentation(){
+		// establecemos los datos del visor UI de Swagger
+		return new OpenAPI()
+				.info(new Info().title(apiTitle).description(apiDescription).version(apiVersion)
+						.contact(new Contact().name("").url("").email(""))
+						.termsOfService(apiTermsOfService)
+						.license(new License()
+								.name(apiLicense)
+								.url(apiLicenseUrl)))
+				.externalDocs(new ExternalDocumentation()
+						.description(apiExternalDocDesc)
+						.url(apiExternalDocUrl));
+
 	}
 
 	public static void main(String[] args) {
